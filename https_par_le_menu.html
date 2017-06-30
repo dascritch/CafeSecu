@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Sécuriser ses serveurs</title>
+    <meta name="description" content="Sécuriser ses serveurs">
+    <meta name="author" content="Xavier Mouton-Dubosc">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="hakimel-reveal.js/css/reveal.min.css">
+    <link rel="stylesheet" href="hakimel-reveal.js/css/theme/default.css" id="theme">
+    <!-- link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,700,600,900,400italic,600italic,700italic' rel='stylesheet' type='text/css'-->
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="hakimel-reveal.js/lib/css/zenburn.css">
+    <style>
+    <style>
+    @font-face {
+        font-family: 'Titillium'; font-style: normal; font-weight: 400;
+        src: local('Titillium Web'), local('TitilliumWeb-Regular'), url(./Titillium/Titillium_Web/TitilliumWeb-Regular.woff) format('woff');
+    }
+    @font-face {
+        font-family: 'Titillium'; font-style: normal; font-weight: 700;
+        src: local('Titillium WebBold'), local('TitilliumWeb-Bold'), url(./Titillium/Titillium_Web/TitilliumWeb-Bold.woff) format('woff');
+    }
+    @font-face {
+        font-family: 'Titillium'; font-style: italic; font-weight: 400;
+        src: local('Titillium WebItalic'), local('TitilliumWeb-Italic'), url(./Titillium/Titillium_Web/TitilliumWeb-Italic.woff) format('woff');
+    }
+    @font-face {
+        font-family: 'Titillium'; font-style: italic; font-weight: 700;
+        src: local('Titillium WebBold Italic'), local('TitilliumWeb-BoldItalic'), url(./Titillium/Titillium_Web/TitilliumWeb-BoldItalic.woff) format('woff');
+    }
+
+    html, body, .reveal p, .reveal li , .reveal pre {
+        font-family: 'Titillium', sans-serif ; 
+    }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 { 
+        font-family: 'Titillium', sans-serif ; 
+        text-shadow :  0 0 5px #000,  -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000, 1px 1px 2px #000;  
+    }
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 { 
+        text-transform: small-caps;
+        font-weight: bold;
+
+    }
+    .bright { padding: 20px !important; margin: 40px;  background : rgba(0,0,0,0.5) }
+    img.big { width : 70% }
+    .reveal p {
+            font-size : 1.4em;
+            font-weight : bold;
+        }
+    .reveal pre {
+            font-size : 1.2em;
+            font-weight : bold;
+            white-space : pre;
+            font-family : monospace;
+            position : relative;
+            left : -5em;
+    }
+
+    section.left {
+        text-align: left;
+    }
+
+    section { height : 100%; color : #7F7;}
+    strong { color : white; }
+    .cursoring.idle { animation: blink 1s steps(2, start) infinite;} @keyframes blink { to { visibility: hidden; } }
+
+    kbd {
+        outline : #777 solid 4px; 
+    }
+
+    </style>
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+        document.write( '<link rel="stylesheet" href="hakimel-reveal.js/css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="reveal" >
+<!-- Any section element inside of this container is displayed as a slide -->
+<div class="slides" >
+ 
+
+
+
+<section class="left">
+    <h2>Sécurités des sites web</h2>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Pourquoi chiffrer</h2>
+    <p>SRSLY ?</p>
+    <p>SRSLY !</p>
+    <aside class="notes"> </aside>
+</section>
+
+
+<section class="left">
+    <h2>On ne sais jamais qui est à l'écoute</h2>
+    <h1>Même dans votre LAN</h1>
+    <p>Des infections JS via des pubs s'amusent à “mettre à jour” des routeurs</p>
+    <p>Des caméras et des imprimantes sont régulièrement piratés</p>
+    <p>C'est au-to-ma-ti-que</p>
+    <aside class="notes"> </aside>
+</section>
+
+
+<section class="left">
+    <h2>On le fait</h2>
+    <p>— Pour garder son job</p>
+    <p>— Pour la sécurité des copains</p>
+    <p>— Pour la confiance des clients</p>
+    <h1>&nbsp;</h1>
+    <h2>Thank you captain obvious…</h2>
+    <p>sauf que 
+    <p><a href="https://blog.mozilla.org/security/2017/06/28/analysis-alexa-top-1m-sites/">blog.mozilla.org/security/2017/06/28/analysis-alexa-top-1m-sites</a></p>
+    <aside class="notes"> </aside>
+</section>
+
+
+<section class="left">
+    <h2>Missions du chiffrement</h2>
+    <p>— Certifier votre correspondant</p>
+    <p>— Confidence de la communication</p>
+    <p>— Intégrité du message</p>
+    <p>— Non-contrefaçon</p>
+</section>
+
+<section class="left">
+    <h2>HTTPS</h2>
+    <p>Comment ça marche :<br /> <a href="https://sudhakar.online/programming/2015/08/09/https.html">sudhakar.online/programming/2015/08/09/https.html</a></p>
+    <p>Nécessité de poser un certificat <del>SSL</del> TLS</p>
+    <p>Le coût d'un certificat n'est pas important (présentation)</p>
+    <p>La version de votre serveur web, oui</p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>(Pour le fun)</h2>
+    <p>On peut poser un certificat TLS côté client</p>
+    <p>Sert pour authentification très solide</p>
+    <p>Alternative aux mots de passe/cookie/CRSF</p>
+    <p>En pratique : trop compliqué à installer</p>
+    <p>Edge, Firefox et Chrome le supportent mais aucune UI</p>
+
+    <p><a href="http://www.browserauth.net/tls-client-authentication">browserauth.net/tls-client-authentication</a></p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Avantages HTTPS</h2>
+    <p>— Prime à la confidentialité dans le référencement Google</p>
+    <p>— Nouvelles API JS (géo-localisation)</p>
+    <p>— Nouveautés protocoles (WebSocket, HTTP2)</p>
+    <p>— Single App Page, Progressive Web Application</p>
+    <p>— Ça énerve les services de renseignement</p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Attention ! Votre navigateur change</h2>
+    <p>— Les ressources <em>http:</em> peuvent ne plus être chargées par défaut (CSP)</p>
+    <p>— Le <em>referee</em> peut disparaitre</p>
+    <p>— Des requêtes XHR peuvent échouer (CORS)</p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Par défaut, HTTPS est laxiste ^^;</h2>
+    <p>— Les protocoles trop vieux sont quand même acceptés</p>
+    <p>— Le navigateur se fout de vérifier le certificat</p>
+    <p>— On peut avoir plusieurs certificats contradictoires</p>
+    <p>— Des proxies et antivirus créent de faux certificats</p>
+    <p>— Certains Certificates Autorities sont des catastrophes</p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Bonnes patiques HTTPS</h2>
+    <p>Mettre à jour son serveur</p>
+    <p>Virer les vieux protocoles (notamment SSL3)</p>
+    <p>Éviter les certifs wildcards</p>
+    <p>Servir tous les assets en https://
+        <ul>
+            <li>Au mieux (avant) : cadenas cassé</li>
+            <li>Actuellement : contenu non chargé</li>
+        </ul>
+    </p>
+    <p>Auditer le HTTPS servi</p>
+    <p>Renouveler tous les ans (comme les NDD)</p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Forcer la transition HTTPS</h2>
+    <p>Rediriger les éventuels sous-domaines</p>
+    <p>Rediriger vers https:// en status 301</p>
+    <p>Cookie en mode “secure”</p>
+    <p>Poser l'entête HSTS : force le navigateur vers HTTPS<br />
+    ⚠ Si vous vous plantez, le cache vous bloquera !
+    <br />
+    <a href="https://www.globalsign.fr/fr/blog/qu-est-ce-que-le-hsts-comment-le-mettre-en-uvre/">globalsign.fr/fr/blog/qu-est-ce-que-le-hsts-comment-le-mettre-en-uvre/</a></p>
+</section>
+
+
+<section class="left">
+    <h2>Zoom sur HTTP2</h2>
+    <p>— Un seul socket</p>
+    <p>— Push content</p>
+    <p>— Réduction des requêtes, rapidité d'affichage</p>
+    <p>— Tunnelling / WebSocket</p>
+    <p>— Hélas, implémentations parfois boîteuses</p>
+    <p>— Si ça marche pas, retour en HTTPS/1.1</p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Punitions pour le HTTP classique</h2>
+    <p>— «  <del>https://</del> » dans la barre d'URL</p>
+    <p>— Déréférencement</p>
+    <p>— ⚠ Alerte sur les formulaires avec mot de passe</p>
+    <p>— ⚠ Alerte sur tous les formulaires</p>
+</section>
+
+<section class="left">
+    <h2>Problèmes récurrents HTTPS</h2>
+    <p>— La première requête sera plus lente.</p>
+    <p>— Les API prévues qu'en HTTP posent souci. Un GROS souci.</p>
+    <p>— Il n'y a pas de certificat pour générer d'autres certificats</p>
+    <p>— Impersonnification<br /> &nbsp; → d'où <em>HTTP Public Key Pinning</em> HPKP</p>
+    <p>— Impersonnification par proxy<br /> &nbsp; → Google a puni Bercy à ce sujet</p>
+    <p>— Si vous utilisez un load balancer ou un CDN<br /> &nbsp; → certif TLS à votre nom</p>
+    <p>— Faire confiance au navigateur pour le cache</p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Authentification</h2>
+    <p>C'est pas que pour nos clients</p>
+    <h2>Validation à deux étapes (2FA)</h2>
+    <p><a href="https://myaccount.google.com/security#signin">myaccount.google.com/security#signin</a></p>
+    <p>SMS ? Évitez : faille SS7 et bugs nombreux</p>
+    <p>Applications à code jetable (standardisé)</p>
+    <p>mots de passe associés à apps récalcitrantes</p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Solutions prophyllatiques</h2>
+    <h2>Content Security Policy (CSP)</h2>
+    <p>Interdire le chargement de certains assets, empêcher les injections XSS et les scripts malicieux</p>
+    <p>Définis en entêtes HTTP,<br /> &nbsp; &nbsp; provisoirement possibles en <em>&lt;meta http-equiv="…&gt;</em></p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>CSP, c'est subtil</h2>
+    <p>Du coup, peut bloquer les style inline comme $(el).css()</p>
+    <p>Déclarer pour chaque type de ressource les NDD externes</p>
+    <p>Rapports de violation via console <kbd>F12</kbd></p>
+    <p>Feedback navigateurs via<br />&nbsp; &nbsp; <em>Content-Security-Policy : __; report-uri:__</em></p>
+    <p><a href="https://content-security-policy.com/">content-security-policy.com</a></p>
+    <p><a href="https://developer.mozilla.org/fr/docs/HTTP/CSP">developer.mozilla.org/fr/docs/HTTP/CSP</a></p>
+    <aside class="notes"> </aside>
+</section>
+
+<section class="left">
+    <h2>Tester (en prod!) ses CSP</h2>
+    <p>Content-Security-Policy-Report-Only :<br />&nbsp; &nbsp; &nbsp; default-src 'self';<br />&nbsp; &nbsp; &nbsp; <strong>report-uri /api/report</strong></p>
+    <p><br /></p>
+    <p>Effectue un POST avec un JSON</p>
+    <p><pre>
+    {
+      "csp-report": {
+        "document-uri": "http://example.com/signup.html",
+        "referrer": "",
+        "blocked-uri": "http://example.com/css/style.css",
+        "violated-directive": "style-src cdn.example.com",
+        "original-policy": "default-src 'none'; style-src cdn.example.com; report-uri /_/csp-reports",
+        "disposition": "report"
+      }
+    }
+    </pre></p>
+</section>
+
+<section class="left">
+    <h3>Solutions prophyllatiques</h3>
+    <h2>Cross-origin HTTP request (CORS)</h2>
+    <h3>Empêcher la récupération de données via un site tiers</h3>
+    <p>— Bloquer du vol d'image <em>&lt;img src="//moi"&gt;</em></p>
+    <p>— Bloquer du vol de bande passante. Exemple : polices</p>
+    <h3>Autoriser expressément les requêtes tierces (-> CDN!)</h3>
+    <p>— Analyse d'audience</p>
+    <p>— Inclusion de flux de réseau social</p>
+</section>
+
+<section class="left">
+    <h3>Solutions prophyllatiques</h3>
+    <h2>Subresource Integrity (SRI)</h2>
+    <p>Quand on charge une ressource d'un site tiers, s'assurer que le contenu n'a pas été modifié</p>
+    <p>Surtout utile pour un CDN, une lib externe (jquery), un provider de webfonts (Google fonts)</p>
+    <p><br /></p>
+    <p>
+    &lt;script src="https://code.jquery.com/jquery-2.1.4.min.js"
+    <strong>integrity</strong>="sha384-R4/ztc4ZlRqWjqIuvf6RX5yb/v90qNGx6fS48N0tRxiGkqveZETq72KgDVJCp2TC"
+    crossorigin="anonymous"&gt;…
+    </p>
+    <p><br /><p>
+    <p><a href="https://www.srihash.org/">srihash.org</a></p>
+</section>
+
+<section class="left">
+    <h2>Les POST via XHR changent !</h2>
+    <h2>Requête <em>preflight</em> (de test) OPTIONS</h2>
+    <p>Pour que le navigateur voit s'il est autorisé à utiliser la resource</p>
+    <p>Il ne faut pas qu'elles débouchent sur une erreur</p>
+    <p>Réponse type attendue : http status 200</p>
+    <p>Console <kbd>F12</kbd>, onglet “Réseau”</p>
+    <p>$ <em>curl $URL -i -X OPTIONS</em></p>
+    <p><pre>Access-Control-Allow-Methods: POST, GET, OPTIONS, HEAD</pre></p>
+</section>
+
+<section>
+    <h1>Documentation</h1>
+    <p><a href="https://wiki.mozilla.org/Security/Guidelines/Web_Security">wiki.mozilla.org/Security/Guidelines/Web_Security</a></p>
+    <p><a href="https://www.ssi.gouv.fr/administration/guide/recommandations-pour-la-securisation-des-sites-web/">ssi.gouv.fr/administration/guide/recommandations-pour-la-securisation-des-sites-web/</a></p>
+    <p><a href="https://www.ssi.gouv.fr/administration/guide/recommandations-de-securite-relatives-a-tls/">ssi.gouv.fr/administration/guide/recommandations-de-securite-relatives-a-tls/</a></p>
+    <p><a href="https://letsencrypt.org/certificates/">letsencrypt.org/certificates/</a></p>
+    <p><a href="https://dascritch.net/post/2011/09/15/SSL-est-elle">dascritch.net/post/2011/09/15/SSL-est-elle</a></p>
+</section>
+
+<section>
+    <h1>Pour tester</h1>
+    <p>Certificat et protocoles : <a href="https://www.ssllabs.com/ssltest/">ssllabs.com/ssltest</a></p>
+    <p>Mise en place : <a href="https://observatory.mozilla.org/">observatory.mozilla.org</a></p>
+    <p>Performances : <a href="https://www.wormly.com/test_ssl/">wormly.com/test_ssl/</a></p>
+    <p>Bonnes pratiques : <a href="https://www.htbridge.com/ssl">htbridge.com/ssl</a></p>
+</section>
+
+<section class="left">
+    <h2>Reste la faille PEBCAK</h2>
+    <img src="Images/HumanError.jpg" />
+    <aside class="notes"> </aside>
+</section>
+
+    
+</div>
+</div>
+
+<script src="hakimel-reveal.js/lib/js/head.min.js"></script>
+<script src="hakimel-reveal.js/js/reveal.min.js"></script>
+<script>
+Reveal.initialize({
+    controls: false,
+    progress: false,
+    history: true,
+    center: false,
+    theme: 'night', 
+    transition:  'none',//'linear', // default/cube/page/concave/zoom/linear/fade/none
+    // Optional libraries used to extend on reveal.js
+    dependencies: [
+        { src: 'hakimel-reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'hakimel-reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'hakimel-reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+        { src: 'hakimel-reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+    ]
+});
+
+var sprite = '▌';
+var cursor = '<span id="cursor" class="cursoring">'+sprite+'</span>';
+var cursor_idle = '<span id="cursor" class="cursoring idle">'+sprite+'</span>';
+
+function cursoring(fragment) {
+    'mode strict';
+    var text = fragment.innerHTML;
+    var textlength = text.length;
+    var pos = 0;
+    function glop() {
+        pos++;
+        if (pos >= textlength) {
+            window.clearTimeout(timing);
+            fragment.innerHTML = text;
+            fragment.insertAdjacentHTML('afterend',cursor_idle);
+            return ;
+        } else {
+            if (text[pos]==='<') while ((pos >= textlength) || text[pos++]!=='>');
+            if (text[pos]==='&') while ((pos >= textlength) || text[pos++]!==';');
+            fragment.innerHTML = text.substr(0,pos) + cursor;
+        }
+    }
+    fragment.textContent = cursor;
+    var timing = window.setInterval(glop,20);
+};
+
+Reveal.addEventListener( 'fragmentshown', function( event ) {
+    var slide = event.fragment.parentNode;
+    if (event.fragment.classList.contains('cursor')) {
+        [].forEach.call(
+            document.querySelectorAll('.cursoring'),
+            function (cursor) {
+            cursor.parentNode.removeChild(cursor);
+        });
+        slide.data_cursored = true;
+        cursoring(event.fragment);
+    }
+} );
+Reveal.addEventListener( 'slidechanged', function( event ) {
+    var slide = event.currentSlide;
+    console.log(slide,slide.data_cursored);
+    console.log(slide.querySelectorAll('.cursor'));
+    // event.fragment = the fragment DOM element
+    if  ( (slide.data_cursored === undefined) && (slide.querySelectorAll('.cursor').length > 0 )) {
+        slide.insertAdjacentHTML('afterbegin',cursor_idle);
+    }
+} );
+
+</script>
+
+</body>
+</html>
